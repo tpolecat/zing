@@ -28,7 +28,7 @@ object Prop {
       def get: IO[A] =
         value.read
 
-      def put(a: => A): IO[Unit] =
+      def :=(a: => A): IO[Unit] =
         for {
           b <- value.modify(b => IO((a, b =/= a)))
           _ <- if (b) {

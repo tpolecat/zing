@@ -11,7 +11,7 @@ object Clock {
 
   def withResolution(ms: Long): IO[RProp[Long]] =
     Prop(0L).map { p =>
-      val update = p.put(System.currentTimeMillis)
+      val update = IO(System.currentTimeMillis) >>= (p := _)
       t.scheduleAtFixedRate(new TimerTask {
         def run = update.unsafePerformIO
       }, 0L, ms)

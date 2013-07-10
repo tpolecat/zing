@@ -48,7 +48,7 @@ object Component {
       _ <- p ->- (_.toRectangle.map(c.setBounds))
       _ <- IO {
         c.addComponentListener(new awt.event.ComponentAdapter {
-          val update: IO[Unit] = IO(c.getBounds).map(Rectangle(_)) >>= (p.put(_))
+          val update: IO[Unit] = IO(c.getBounds).map(Rectangle(_)) >>= (p := _)
           override def componentResized(e: awt.event.ComponentEvent): Unit = update.unsafePerformIO
           override def componentMoved(e: awt.event.ComponentEvent): Unit = update.unsafePerformIO
         })
@@ -61,7 +61,7 @@ object Component {
       _ <- p ->- (IO(_).map(c.setVisible))
       _ <- IO {
         c.addComponentListener(new awt.event.ComponentAdapter {
-          val update: IO[Unit] = IO(c.isVisible) >>= (p.put(_))
+          val update: IO[Unit] = IO(c.isVisible) >>= (p := _)
           override def componentShown(e: awt.event.ComponentEvent): Unit = update.unsafePerformIO
           override def componentHidden(e: awt.event.ComponentEvent): Unit = update.unsafePerformIO
         })
