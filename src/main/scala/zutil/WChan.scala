@@ -6,14 +6,14 @@ import scalaz.Contravariant
 import scalaz.effect.IO
 import scalaz.Equal
 
-trait WProp[-A] { outer =>
+trait WChan[-A] { outer =>
 
   protected def priorCancel: MVar[Cancel]
 
   def put(a: => A): IO[Unit]
 
-  def contramap[B](f: B => A): WProp[B] =
-    new WProp[B] {
+  def contramap[B](f: B => A): WChan[B] =
+    new WChan[B] {
       protected def priorCancel = outer.priorCancel
       def put(b: => B): IO[Unit] = outer.put(f(b))
     }
@@ -31,9 +31,9 @@ trait WProp[-A] { outer =>
 
 }
 
-object WProp {
-  implicit object ContravariantWProp extends Contravariant[WProp] {
-    def contramap[A, B](r: WProp[A])(f: B => A): WProp[B] = r contramap f
+object WChan {
+  implicit object ContravariantWChan extends Contravariant[WChan] {
+    def contramap[A, B](r: WChan[A])(f: B => A): WChan[B] = r contramap f
   }
 }
 

@@ -29,6 +29,7 @@ object Test extends SafeApp {
       c <- Clock.withResolution(500)
       l <- ZLabel.empty
       _ <- l.text -<- c.map(new Date(_).toString)
+      _ <- l.doubleClicks ->- putStrLn("Double-click!")
     } yield l
 
   def boundsLabel(c: Component): IO[ZLabel] =

@@ -4,7 +4,7 @@ import scalaz.syntax.apply._
 import scalaz.Apply
 import scalaz.effect.IO
 
-trait RProp[+A] { outer =>
+trait RProp[+A] { o =>
 
   def get: IO[A]
 
@@ -12,10 +12,10 @@ trait RProp[+A] { outer =>
     new RProp[B] {
 
       def get: IO[B] =
-        outer.get.map(f)
+        o.get.map(f)
 
       def ->-(g: B => IO[Unit]): IO[Cancel] =
-        outer ->- (a => g(f(a)))
+        o ->- (a => g(f(a)))
 
     }
 
@@ -23,12 +23,12 @@ trait RProp[+A] { outer =>
     new RProp[B] {
 
       def get: IO[B] =
-        outer.get.flatMap(a => f.get.map(_(a)))
+        o.get.flatMap(a => f.get.map(_(a)))
 
       def ->-(g: B => IO[Unit]): IO[Cancel] =
         for {
-          x <- outer ->- (a => f.get.map(_.apply(a)).flatMap(g))
-          y <- f ->- (ab => outer.get.map(ab).flatMap(g))
+          x <- o ->- (a => f.get.map(_.apply(a)).flatMap(g))
+          y <- f ->- (f => o.get.map(f).flatMap(g))
         } yield (x |@| y)((_, _) => ())
 
     }

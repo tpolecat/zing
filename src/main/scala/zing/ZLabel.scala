@@ -3,36 +3,50 @@ package zing
 import scalaz.syntax.monad._
 import javax.swing.JLabel
 import scalaz.effect.IO
+import scalaz.std.string._
 import zutil.Prop
 import zutil.RProp
 import zwt.Component
-import zwt.Props
 
-trait ZLabel extends ZComponent {
-  type Peer <: JLabel
-  def text: Prop[String]
+abstract class ZLabel(ps: ZLabel.Props) extends ZComponent(ps.sup) {
+  type Peer <: ZLabel.PeerUB
+  def text: Prop[String] = ps.text
 }
 
-object ZLabel extends Props {
+object ZLabel {
+
+  type PeerUB = javax.swing.JLabel
 
   def empty: IO[ZLabel] =
     for {
-
-      // Our component
       p <- IO(new JLabel)
-
-      // Properties
-      pText <- text(p)
-      pBounds <- bounds(p)
-      pVisible <- visible(p)
-
-    } yield new ZLabel {
+      ps <- Props(p)
+    } yield new ZLabel(ps) {
       type Peer = JLabel
       val peer = p
-      val text = pText
-      val bounds = pBounds
-      val visible = pVisible
     }
+
+  trait Props {
+    def sup: ZComponent.Props
+    def text: Prop[String]
+  }
+
+  object Props {
+    def apply(c: PeerUB): IO[Props] =
+      ^(ZComponent.Props(c), text(c)) { (s, t) =>
+        new Props {
+          val sup = s
+          val text = t
+        }
+      }
+  }
+
+  def text(a: PeerUB): IO[Prop[String]] =
+    for {
+      p <- Prop(a.getText)
+      _ <- p ->- (IO(_).map(a.setText))
+      // TODO: readable
+    } yield p
 
 }
 

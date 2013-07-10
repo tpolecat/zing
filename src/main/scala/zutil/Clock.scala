@@ -2,6 +2,8 @@ package zutil
 
 import java.util.{Timer, TimerTask}
 import scalaz.effect.IO
+import scalaz._
+import Scalaz._
 
 object Clock {
 

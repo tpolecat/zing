@@ -16,12 +16,13 @@ resolvers ++= Seq(
 
 // Main
 libraryDependencies ++= Seq(
-  "org.scalaz"     % "scalaz-core_2.10"   % "7.0.0",
-  "org.scalaz"     % "scalaz-effect_2.10" % "7.0.0",
+  "org.scalaz"     % "scalaz-core_2.10"       % "7.0.0",
+  "org.scalaz"     % "scalaz-effect_2.10"     % "7.0.0",
   "org.scalaz"     % "scalaz-concurrent_2.10" % "7.0.0",
-  "org.scala-stm" %% "scala-stm"          % "0.7",
-  "org.typelevel" %% "shapeless-scalaz"   % "0.2-SNAPSHOT",
-  "com.chuusai"   %% "shapeless"          % "1.2.4"
+  "org.scalaz"     % "scalaz-iteratee_2.10"   % "7.0.0",
+  "org.scala-stm" %% "scala-stm"              % "0.7",
+  "org.typelevel" %% "shapeless-scalaz"       % "0.2-SNAPSHOT",
+  "com.chuusai"   %% "shapeless"              % "1.2.4"
 )
 
 // Test
